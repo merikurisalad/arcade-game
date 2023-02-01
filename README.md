@@ -1,2 +1,2 @@
 # arcade-game
-Unfinished arcade game based on Donkey Kong
+Simple arcade game based on Donkey Kong (built with Unity)
