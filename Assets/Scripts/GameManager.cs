@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public Sprite img;
+    private int level;
     private int lives;
     private int score;
 
@@ -13,6 +15,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        DontDestroyOnLoad(gameObject);
         NewGame();
     }
 
@@ -21,14 +24,40 @@ public class GameManager : MonoBehaviour
         lives = 3;
         score = 0;
 
-        // load level
+        // LoadLevel(0);
+    }
+
+    private void LoadLevel(int index)
+    {
+        level = index;
+
+        Camera camera = Camera.main;
+
+        if (camera != null) {
+            camera.cullingMask = 0;
+        }
+
+        Invoke(nameof(LoadScene), 1f);
+    
+    }
+
+    private void LoadScene()
+    {
+        SceneManager.LoadScene(level);
     }
 
     public void LevelComplete()
     {
         score += 1000;
         
-        // load level
+        // TODO: create and load new level
+        int nextLevel = level + 1;
+        
+        if (nextLevel < SceneManager.sceneCountInBuildSettings) {
+            LoadLevel(nextLevel);
+        } else {
+            LoadLevel(0);
+        }
     }
 
     public void LevelFailed()
@@ -38,8 +67,7 @@ public class GameManager : MonoBehaviour
         if (lives <= 0) {
             NewGame();
         } else {
-            
-            // reload current level
+            LoadLevel(level);
         }
     }
 }
